@@ -38,3 +38,8 @@ DATAFILE '+DATA/rjd14/datafile/easy_dat_med13.dbf' size 6024M,
 '+DATA/rjd14/datafile/easy_dat_med10.dbf' size 6024M REUSE,
 '+DATA/rjd14/datafile/easy_dat_med11.dbf' size 6024M REUSE,
 '+DATA/rjd14/datafile/easy_dat_med12.dbf' size 6024M REUSE AUTOEXTEND ON;
+
+--Resize de datafile
+alter database
+datafile '+DG_FRA_VIA/viarac/datafile/consinco_dat.650.1110371321'
+resize 31744M;
