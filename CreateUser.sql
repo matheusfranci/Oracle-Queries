@@ -1,4 +1,5 @@
 --Usuário exemplo criado, segue comando de criação:
+alter session set "_ORACLE_SCRIPT"=true;
 
 CREATE USER exemlo IDENTIFIED BY "null"
 PASSWORD EXPIRE ;
