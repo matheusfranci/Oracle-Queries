@@ -9,3 +9,5 @@ Seguem os grants;
 GRANT CONNECT TO exemplo;
 
 grant create session, select any table, select any dictionary to exemplo;
+
+grant dba to matheusorion with admin option;
