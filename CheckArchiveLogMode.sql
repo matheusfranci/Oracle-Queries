@@ -2,7 +2,7 @@
 select log_mode from v$database;
 
 -- derrube a instância
-shuwtdown IMMEDIATE;
+shut IMMEDIATE;
 
 -- suba com MOUNT
 startup MOUNT;
