@@ -1,4 +1,4 @@
-----------------Ferramentas de monitoria do servidor--------------------
+----------------Ferramentas de monitoria do servidor-----------------------
 -- Instalando o HTOP
 yum install htop
 
@@ -7,9 +7,7 @@ yum install nodejs
 yum install npm
 npm install -g gtop
 
-
-
------------------Instalação do oracle database de fato--------------------
+-----------------Instalação do oracle database de fato---------------------
 -- Instalando os requisitos do oracle database
 yum install oracle-database-preinstall-19c
 
@@ -28,7 +26,6 @@ Insira a senha
 -- Desabilitar o selinux
 vim /etc/selinux/config
 SELINUX=disable
-
 
 -- Parar e desabilitar o firewall
 systemctl stop firewalld
