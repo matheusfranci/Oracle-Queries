@@ -1,0 +1,11 @@
+-- Instalando o snapd
+yum install snapd
+
+-- Atualizando os pacotes
+yum update
+
+-- Criar link simbólico
+sudo ln -s /var/lib/snapd/snap /snap
+
+-- Instalação do htop
+sudo snap install htop
