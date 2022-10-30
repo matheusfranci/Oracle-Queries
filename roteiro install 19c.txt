@@ -1,0 +1,54 @@
+----------------Ferramentas de monitoria do servidor--------------------
+-- Instalando o HTOP
+yum install htop
+
+-- Instalando o gtop
+yum install nodejs
+yum install npm
+npm install -g gtop
+
+
+
+-----------------Instalação do oracle database de fato--------------------
+-- Instalando os requisitos do oracle database
+yum install oracle-database-preinstall-19c
+
+-- Adicionando ip, host com domínio e hostname no arquivo abaixo
+vim /etc/hosts
+
+-- Adicionar o ip e alterar BOOTPROTO para static
+vim /etc/sysconfig/network-scripts/ifcfg-enp0s3
+BOOTPROTO="static"
+IPADDR=192.xxx.x.xx
+
+-- configurar senha usuario oracle
+passwd oracle
+Insira a senha
+
+-- Desabilitar o selinux
+vim /etc/selinux/config
+SELINUX=disable
+
+
+-- Parar e desabilitar o firewall
+systemctl stop firewalld
+systemctl disable firewalld
+
+-- Criar o ORACLE_HOME e ORACLE_BASE 
+mkdir -p /u01/app/oracle/product/19.0.0/dbhome_1
+mkdir -p /u02/oradata
+
+-- Conceder permissão ao grupo oracle e ao usuário
+chown -R oracle:oinstall /u01 /u02
+chmod -R 775 /u01 /u02
+
+-- Entrar diretamento com o usuário oracle no MobaXterm, caso contrário não funcionará
+-- Declaração das variáveis e entrada no diretório de descompactação do arquivo zippado
+export ORACLE_BASE=/u01/app/oracle
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1
+cd /u01/app/oracle/product/19.0.0/dbhome_1
+unzip -oq /home/oracle/LINUX.X64_193000_db_home.zip
+
+-- Executar a instalação dentro do ORACLE_HOME
+./runInstaller
+
