@@ -21,8 +21,6 @@ select host_name,
 instance_name,
 status ,
 database_status,
-instance_mode,
 version,
-DATABASE_TYPE,
 'Uptime : ' || floor(sysdate - startup_time) || ' days(s) ' AS UPTIME
 from v$instance;
