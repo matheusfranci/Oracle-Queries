@@ -13,4 +13,4 @@ SELECT
  (a.BYTES/1024/1024) AS SIZE_MB
 FROM v$log a
 JOIN v$logfile b ON a.Group#=b.Group#
-ORDER BY a.GROUP#
+ORDER BY a.GROUP#;
