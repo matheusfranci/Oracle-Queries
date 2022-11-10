@@ -3,6 +3,7 @@ select GROUP#,THREAD#,SEQUENCE#,bytes/1024/1024,
 MEMBERS,STATUS from v$log;
 
 -- Redo status
+ column REDOLOG_FILE_NAME format a50
 SELECT
  a.GROUP#,
  a.THREAD#,
