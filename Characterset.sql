@@ -1,4 +1,8 @@
 --Necessário shutdown e startup no modo restrito
+shut immediate;
+
+startup restrict;
+
 -- consulta o atual
 select value from nls_database_parameters where parameter = 'NLS_CHARACTERSET';
 
