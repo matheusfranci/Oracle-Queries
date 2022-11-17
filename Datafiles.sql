@@ -1,3 +1,5 @@
+col tablespace_name format a16;
+col file_name format a36;
 select file_name,
 tablespace_name,
 ROUND(bytes/1024/1024) AS currentbytesmb,
