@@ -1,0 +1,21 @@
+1) Copiar aquivio chamado "dbora" na pasta /etc/init.d e atribuir as seguintes permissoes (root)
+	chown root.root dbora
+	chmod 777 dbora
+
+2) Ajustar o arquivo dbora (root)
+	edite a variavel: ORA_HOME
+	coloque o oracle home do seu ambiente
+	
+3) Ajustar o ORATAB (root)		
+	vi /etc/oratab
+	SID:/u01/app/oracle/product/12.2.0/dbhome_1:N
+	SID:/u01/app/oracle/product/12.2.0/dbhome_1:Y -- colocar Y
+	
+4) Configuração serviço	(root)
+	chkconfig --add oracle
+	chkconfig --level 2345 dbora on
+	chkconfig --level 016  dbora off
+
+5) Teste (root)
+	service dbora start
+	service dbora stop
