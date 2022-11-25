@@ -27,6 +27,8 @@ WHERE a.tablespace_name = b.tablespace_name
 ORDER BY tablespace_name;
 
 
+set lines 2000
+set pages 2000
 SELECT  a.tablespace_name,
     ROUND (((c.BYTES - NVL (b.BYTES, 0)) / c.BYTES) * 100,2) percentage_used,
     c.BYTES / 1024 / 1024 space_allocated,
