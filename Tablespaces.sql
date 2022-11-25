@@ -1,3 +1,5 @@
+set lines 2000
+set pages 2000
 SELECT tablespace_name,
 size_mb,
 free_mb,
