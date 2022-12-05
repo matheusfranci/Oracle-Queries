@@ -1,3 +1,4 @@
+-- Todos
 select to_char(START_TIME,'mm/dd/yy"-"hh24:mi') start_time,
 to_char(END_TIME,'mm/dd/yy"-"hh24:mi') end_time,
 OUTPUT_DEVICE_TYPE,
@@ -25,6 +26,7 @@ from V$RMAN_BACKUP_JOB_DETAILS
 where TIME_TAKEN_DISPLAY > '01:00:00'
 order by session_key;
 
+-- Apenas os Backups fulls
 select to_char(V$RMAN_BACKUP_JOB_DETAILS.START_TIME,'mm/dd/yy"-"hh24:mi') Inicio,
 to_char(V$RMAN_BACKUP_JOB_DETAILS.END_TIME,'mm/dd/yy"-"hh24:mi') Final,
 V$RMAN_BACKUP_JOB_DETAILS.OUTPUT_DEVICE_TYPE as Local,
