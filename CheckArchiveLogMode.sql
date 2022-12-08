@@ -28,3 +28,6 @@ ALTER SYSTEM SET LOG_ARCHIVE_DEST_2='LOCATION=C:\Oracle\Archives\Dest2 MANDATORY
 
 -- Consultar os log_archive_dest
 select dest_name,status,destination from V$ARCHIVE_DEST;
+
+-- Verificando o log archive format
+ select name, value from v$spparameter where name in ('log_archive_dest_2','log_archive_format');
