@@ -8,11 +8,14 @@ select username,user_id from dba_users;
 select resource_type, resource_name, limit from dba_profiles where profile='SYSDG';
 
 -- Verificando os grants
-col username format a10
-set line size 300
-col sys_priv format a16
-col object_owner format a13
-col object_name format a23
-col run_name format a27
-SELECT SYS_PRIV, OBJECT_OWNER, OBJECT_NAME,
-RUN_NAME FROM DBA_USED_PRIVS WHERE USERNAME ='C##MATHEUS';
+SELECT PRIVILEGE
+FROM sys.dba_sys_privs
+WHERE grantee = 'C##MATHEUS';
+
+-- Verificando grants em tabelas especificas
+SELECT owner, table_name, select_priv, insert_priv, delete_priv, update_priv, references_priv, alter_priv, index_priv 
+FROM table_privileges
+ WHERE grantee='C##MATHEUS';
+
+-- Extraindo ddl de usuário
+SELECT dbms_metadata.get_ddl('USER','C##MATHEUS") FROM dual;
