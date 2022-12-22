@@ -1,0 +1,1 @@
+tkprof C:\Users\augus\Downloads\ORCL_ora_97646 C:\Diretoro\daminha\vontade\explicadopelotkprof.txt 
