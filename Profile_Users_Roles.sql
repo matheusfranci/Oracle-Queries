@@ -18,4 +18,4 @@ FROM table_privileges
  WHERE grantee='C##MATHEUS';
 
 -- Extraindo ddl de usuário
-SELECT dbms_metadata.get_ddl('USER','C##MATHEUS") FROM dual;
+SELECT dbms_metadata.get_ddl('USER','CONSINCO") FROM dual;
