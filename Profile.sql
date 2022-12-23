@@ -30,4 +30,29 @@ Oracle Database calcula as unidades totais de serviço como uma soma ponderada d
 CONNECT_TIME, LOGICAL_READS_PER_SESSION e PRIVATE_SGA.*/
 
 
-select * from v$instance;
+-- Criando usuário comum para o root e todos os pdbs
+CREATE USER C##matheusadmin IDENTIFIED BY oracle CONTAINER=ALL;
+
+-- COMMON  GRANT
+GRANT CREATE SESSION TO C##matheusadmin CONTAINER=ALL;
+
+-- CRIANDO PROFILE
+CREATE PROFILE c##prof LIMIT
+SESSIONS_PER_USER UNLIMITED
+CPU_PER_SESSION UNLIMITED
+CPU_PER_CALL 3000
+CONNECT_TIME 45
+LOGICAL_READS_PER_SESSION DEFAULT
+LOGICAL_READS_PER_CALL 1000
+PRIVATE_SGA 15K
+COMPOSITE_LIMIT 5000000
+FAILED_LOGIN_ATTEMPTS 1
+CONTAINER=ALL;
+
+-- Atribuindo um profile para um usuário
+ALTER USER c##matheusadmin PROFILE c##prof CONTAINER=ALL;
+
+-- Verificando se o usuário possui um profile//SEMPRE EM MAIUSCULO O NOME DO USUÁRIO
+SELECT PROFILE FROM DBA_USERS WHERE USERNAME='C##MATHEUSADMIN';
+
+
