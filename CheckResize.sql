@@ -1,6 +1,5 @@
 set serveroutput on
  execute dbms_output.enable(2000000);
-
  declare
   cursor c_dbfile is
   select tablespace_name
@@ -10,17 +9,14 @@ set serveroutput on
   from sys.dba_data_files
   where status !='INVALID'
   order by tablespace_name,file_id;
-
   cursor c_space(v_file_id in number) is
   select block_id,blocks
   from sys.dba_free_space
   where file_id=v_file_id
   order by block_id desc;
-
  blocksize binary_integer;
  filesize binary_integer;
  extsize binary_integer;
-
  begin
   select value
   into blocksize
