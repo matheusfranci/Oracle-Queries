@@ -11,9 +11,7 @@ order by tablespace_name, file_name;
 col v$datafile.name format a16;
 col v$datafile.creation_time format a36;
 col dba_data_files.tablespace_name format a36;
-select v$datafile.name,
-v$datafile.creation_time,
-dba_data_files.tablespace_name
-from v$datafile, dba_data_files
-where dba_data_files.tablespace_name in ('CONSINCP_DAT', 'USERS', 'CONSINCO_WEB')
-order by 1;
+select Distinct v$datafile.name,
+v$datafile.creation_time
+from v$datafile
+order by creation_time desc;
