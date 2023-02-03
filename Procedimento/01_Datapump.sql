@@ -15,3 +15,5 @@ impdp system/senha@nomedopdb directory=DATA_PUMP_DIR14 dumpfile=exp_full.dmp log
 
 
 --Lembrar-se das permissões de acesso às pastas.
+ 
+ -- startup restrict aumenta a performance do impdp
