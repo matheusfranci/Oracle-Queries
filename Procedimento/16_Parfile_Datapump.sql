@@ -1,10 +1,13 @@
-JOB_NAME=EXPORT_ORION
+JOB_NAME=EXPORT
 DIRECTORY=ORACLE_BASE
-DUMPFILE=EXPORT_ORCLPDB.dmp
+DUMPFILE=EXPORT_ECOAPP.dmp
 FULL=Y
 
-expdp system/2022@orclpdb parfile=C:\oracle_19c\expdp.par logfile=export.log
+expdp system/2022@ecoapp parfile=C:\oracle_19c\parameterfile.par logfile=export.log
 
+-- Atachar no job e verificar os status
+expdp system/2022@ecoapp attach=EXPORT
+procedimento usuário/senha@instância attach=nomedojob
 
 select 'ALTER SYSTEM SET STREAMS_POOL_SIZE='||(max(to_number(trim(c.ksppstvl)))+67108864)||' SCOPE=SPFILE;' 
 from sys.x$ksppi a, sys.x$ksppcv b, sys.x$ksppsv c 
