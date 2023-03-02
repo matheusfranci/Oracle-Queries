@@ -1,0 +1,12 @@
+-- Shrink Table
+-- Habilitar o row movement
+ALTER TABLE TABELAFRAG ENABLE ROW MOVEMENT;
+
+-- Compactação
+ALTER TABLE TABELAFRAG SHRINK SPACE COMPACT;
+
+-- Resetar marca d'água
+ALTER TABLE TABELAFRAG SHRINK SPACE;
+
+-- Shrink completo incluindo índices
+ALTER TABLE TABELAFRAG SHRINK SPACE CASCADE;
