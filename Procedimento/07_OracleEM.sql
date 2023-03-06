@@ -12,6 +12,6 @@ lsnrctl status
 
 -- OBS: Deve ser feito para cada pdb
 -- Os links seguem esse padrão:
-https://192.xxx.x.xx:5501/em/
+https://172.16.9.110:5500/em/
 
 -- Entre com a senha de sys configurada na instalação
