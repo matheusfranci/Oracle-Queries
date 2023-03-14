@@ -29,7 +29,7 @@ from
    dba_segments
 where
    owner not in (
-'SYSTEM', 'XDB', 'SYS', 'TSMSYS', 'MDSYS', 'EXFSYS', 'WMSYS', 'ORDSYS', 'OUTLN', 'DBSNMP', 'CTXSYS', 'APEX_030200','ORDDATA', 'APPQOSSYS');
+'SYSTEM', 'XDB', 'SYS', 'TSMSYS', 'MDSYS', 'EXFSYS', 'WMSYS', 'ORDSYS', 'OUTLN', 'DBSNMP', 'CTXSYS', 'APEX_030200','ORDDATA', 'APPQOSSYS', 'SYSMAN');
 
 -- Verificando o tamanho de cada schema que não pertence ao oracle
 select distinct
@@ -38,5 +38,5 @@ from
    dba_segments
 where
    owner not in (
-'SYSTEM', 'XDB', 'SYS', 'TSMSYS', 'MDSYS', 'EXFSYS', 'WMSYS', 'ORDSYS', 'OUTLN', 'DBSNMP', 'CTXSYS', 'APEX_030200','ORDDATA', 'APPQOSSYS')
+'SYSTEM', 'XDB', 'SYS', 'TSMSYS', 'MDSYS', 'EXFSYS', 'WMSYS', 'ORDSYS', 'OUTLN', 'DBSNMP', 'CTXSYS', 'APEX_030200','ORDDATA', 'APPQOSSYS', 'SYSMAN')
 group by owner order by owner;
