@@ -21,3 +21,22 @@ clear breaks
 clear computes
 compute sum of SIZE_IN_GB on report
 select owner,sum(bytes)/1024/1024/1024"SIZE_IN_GB" from dba_segments group by owner order by owner;
+
+-- Verificando schemas que não são do próprio oracle database
+select distinct
+   owner
+from
+   dba_segments
+where
+   owner not in (
+'SYSTEM', 'XDB', 'SYS', 'TSMSYS', 'MDSYS', 'EXFSYS', 'WMSYS', 'ORDSYS', 'OUTLN', 'DBSNMP', 'CTXSYS', 'APEX_030200','ORDDATA');
+
+-- Verificando o tamanho de cada schema que não pertence ao oracle
+select distinct
+   owner, sum(bytes)/1024/1024/1024"SIZE_IN_GB"
+from
+   dba_segments
+where
+   owner not in (
+'SYSTEM', 'XDB', 'SYS', 'TSMSYS', 'MDSYS', 'EXFSYS', 'WMSYS', 'ORDSYS', 'OUTLN', 'DBSNMP', 'CTXSYS', 'APEX_030200','ORDDATA')
+group by owner order by owner;
