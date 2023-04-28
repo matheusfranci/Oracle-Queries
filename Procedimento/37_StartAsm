@@ -1,0 +1,59 @@
+-- Primeiro precisamos iniciar o HAS( Oracle High Availability Services)
+-- É necessário direcionar o caminho para executar o comando com sucesso no usuário root
+[root@RM-19 bin]# /app/grid/products/19.3.0/dbhome_1/bin/crsctl start has
+CRS-4123: Oracle High Availability Services has been started.
+
+-- Verificando status
+[root@RM-19 bin]# /app/grid/products/19.3.0/dbhome_1/bin/crsctl status resource -t
+--------------------------------------------------------------------------------
+Name           Target  State        Server                   State details
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.DATA.dg
+               ONLINE  ONLINE       rm-19                    STABLE
+ora.DATA01.dg
+               OFFLINE OFFLINE      rm-19                    STABLE
+ora.FRA.dg
+               ONLINE  ONLINE       rm-19                    STABLE
+ora.LISTENER.lsnr
+               ONLINE  ONLINE       rm-19                    STABLE
+ora.asm
+               ONLINE  ONLINE       rm-19                    STABLE
+ora.ons
+               OFFLINE OFFLINE      rm-19                    STABLE
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.cssd
+      1        ONLINE  ONLINE       rm-19                    STABLE
+ora.diskmon
+      1        OFFLINE OFFLINE                               STABLE
+ora.evmd
+      1        ONLINE  ONLINE       rm-19                    STABLE
+ora.rm.db
+      1        ONLINE  ONLINE       rm-19                    Open,HOME=/app/oracl
+                                                             e/product/19.3.0/dbh
+                                                             ome_1,STABLE
+--------------------------------------------------------------------------------
+
+-- Inciando o ASM
+sudo su - grid
+asmcmd
+startup
+ASM instance started
+
+Total System Global Area     1976072392 bytes
+Fixed Size                      8943816 bytes
+Variable Size                1941962752 bytes
+ASM Cache                      25165824 bytes
+ORA-15110: no diskgroups mounted
+
+-- Caso os diskgroups não subam de imediato seguem os comandos:
+-- Verificando os status dos dgs
+select name,state,type from v$asm_diskgroup;
+
+-- Subindo efetivamente o dg
+alter diskgroup data mount;
+
+-- Depois que has e o asm estiverem disponíveis basta subir a instância
