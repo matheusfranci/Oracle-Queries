@@ -1,0 +1,2 @@
+select 'alter database rename file '''||member||''' to ''/u01/app/oracle/oradata/rms01/'||substr(member, instr(member, '/',-1)+1)||''';'  "RENAME REDOLOGFILES" from v$logfile
+/
