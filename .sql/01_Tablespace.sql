@@ -1,3 +1,4 @@
+-- Data: 12/06/2023
 set feed off
 column DT new_value DATA noprint
 select to_char(sysdate, 'DDMMYYYY_HH24MI') DT from dual;
