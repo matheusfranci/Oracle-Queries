@@ -27,6 +27,15 @@ Insira a senha
 vim /etc/selinux/config
 SELINUX=disable
 
+Editar a configuração do SSH:
+# vi /etc/ssh/ssh_config
+X11Forwarding yes
+X11UseLocalhost no
+TCPKeepAlive yes
+
+systemctl restart sshd
+
+
 -- Parar e desabilitar o firewall
 systemctl stop firewalld
 systemctl disable firewalld
