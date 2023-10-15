@@ -3,3 +3,8 @@ Select 'Alter '||decode(object_type,'PACKAGE BODY','PACKAGE','UNDEFINED','SNAPSH
        decode(object_type,'PACKAGE BODY','COMPILE BODY','COMPILE')||';'
 From   Dba_Objects
 where  Status <> 'VALID';
+
+
+@?\rdbms\admin\utlrp.sql;
+OR
+@?\rdbms\admin\utlirp.sql;
