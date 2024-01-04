@@ -1,8 +1,8 @@
 SELECT 
-    name, 
-    free_mb, 
-    total_mb, 
-    ROUND(free_mb/total_mb*100, 2) as percentage
+    name as "Disk Group", 
+    free_mb as "Livre", 
+    total_mb as "Total", 
+    ROUND(free_mb/total_mb*100, 2) as "Livre%"
 FROM v$asm_diskgroup;
 
 -- SCP dentro do asm
