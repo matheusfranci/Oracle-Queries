@@ -5,10 +5,14 @@
 spo PerformanceCheck.txt 
 
 -- parametros sqlplus
-set pages 0
-set lines 120
-set pause off
-set feedback off
+SET SERVEROUTPUT ON
+SET PAGESIZE 1000
+SET LINESIZE 1000
+SET lines 200
+SET FEEDBACK OFF
+set heading on
+set termout on
+set sqlblanklines on
 ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.';
 
  prompt
