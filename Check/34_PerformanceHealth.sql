@@ -1,6 +1,3 @@
--- Performance Check
--- Autor Matheus Francisco Moreira dos Santos
-
 -- parametros sqlplus
 SET SERVEROUTPUT ON
 SET PAGESIZE 9999
@@ -14,12 +11,6 @@ SET ECHO OFF
 ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.';
 spo PerformanceCheck.html
 
-ttitle center 'SGA' skip 2
-show parameter sga
-
-ttitle center 'PGA' skip 2
-show parameter pga
-
 ttitle center 'Hardware' skip 2
 select STAT_NAME,to_char(VALUE) as VALUE ,COMMENTS from v$osstat where stat_name IN ('NUM_CPUS','NUM_CPU_CORES','NUM_CPU_SOCKETS')
 union
@@ -32,6 +23,48 @@ show parameter optimizer_index_cost_adj
 ttitle center 'Optimizer Index Caching ' skip 2
 show parameter optimizer_index_caching
 
+ttitle center 'SGA_TARGET' skip 2
+SHOW PARAMETER SGA_TARGET;
+
+ttitle center 'SGA_MAX_SIZE' skip 2
+SHOW PARAMETER SGA_MAX_SIZE;
+
+ttitle center 'PGA_AGGREGATE_TARGET' skip 2
+SHOW PARAMETER PGA_AGGREGATE_TARGET;
+
+ttitle center 'DB_CACHE_SIZE' skip 2
+SHOW PARAMETER DB_CACHE_SIZE;
+
+ttitle center 'SHARED_POOL_SIZE' skip 2
+SHOW PARAMETER SHARED_POOL_SIZE;
+
+ttitle center 'LOG_BUFFER' skip 2
+SHOW PARAMETER LOG_BUFFER;
+
+ttitle center 'SORT_AREA_SIZE' skip 2
+SHOW PARAMETER SORT_AREA_SIZE;
+
+ttitle center 'SORT_AREA_RETAINED_SIZE' skip 2
+SHOW PARAMETER SORT_AREA_RETAINED_SIZE;
+
+ttitle center 'DB_WRITER_PROCESSES' skip 2
+SHOW PARAMETER DB_WRITER_PROCESSES;
+
+ttitle center 'LOG_WRITER' skip 2
+SHOW PARAMETER LOG_WRITER;
+
+ttitle center 'LOG_CHECKPOINTS_TO_ALERT' skip 2
+SHOW PARAMETER LOG_CHECKPOINTS_TO_ALERT;
+
+ttitle center 'FAST_START_MTTR_TARGET' skip 2
+SHOW PARAMETER FAST_START_MTTR_TARGET;
+
+ttitle center 'SESSION_CACHED_CURSORS' skip 2
+SHOW PARAMETER SESSION_CACHED_CURSORS;
+
+ttitle center 'OPTIMIZER_MODE' skip 2
+SHOW PARAMETER OPTIMIZER_MODE;
+
 ttitle center 'ArchiveLogMode' skip 2
 select log_mode from v$database;
 
@@ -41,28 +74,26 @@ select 'Hostname : ' || host_name ,'Instance Name : ' || instance_name ,'Started
 ttitle center 'Database Size' skip 2
 select sum(bytes) /1073741824  TAMANHO_GB from dba_segments;
 
-ttitle center 'Tablespace Usage' skip 2
-SELECT  a.tablespace_name,
-    ROUND (((c.BYTES - NVL (b.BYTES, 0)) / c.BYTES) * 100,2) percentage_used,
-    c.BYTES / 1024 / 1024 space_allocated,
-    ROUND (c.BYTES / 1024 / 1024 - NVL (b.BYTES, 0) / 1024 / 1024,2) space_used,
-    ROUND (NVL (b.BYTES, 0) / 1024 / 1024, 2) space_free,
-    c.DATAFILES
-  FROM dba_tablespaces a,
-       (    SELECT   tablespace_name,
-                  SUM (BYTES) BYTES
-           FROM   dba_free_space
-       GROUP BY   tablespace_name
-       ) b,
-      (    SELECT   COUNT (1) DATAFILES,
-                  SUM (BYTES) BYTES,
-                  tablespace_name
-           FROM   dba_data_files
-       GROUP BY   tablespace_name
-    ) c
-  WHERE b.tablespace_name(+) = a.tablespace_name
-    AND c.tablespace_name(+) = a.tablespace_name
-ORDER BY tablespace_name;
+ttitle center 'ESTADO DAS TABLESPACES' skip 2
+select
+   fs.tablespace_name                                               "Tablespace",
+   round(df.totalspace - fs.freespace)                              "Used MB",
+   round(fs.freespace)                                              "Free MB",
+   round(100 * (fs.freespace / df.totalspace))                      "Pct. Free %",
+   round(df.totalspace)                                             "Total MB",
+   round(tb.maxbytes)                                               "Max extend MB"
+   --, round(100 - (100 * (df.totalspace / tb.maxbytes)))           "Pct. Extend %"
+   from
+   (select tablespace_name, sum(bytes/1024)/1024 TotalSpace from dba_data_files
+   group by tablespace_name) df,
+   (select tablespace_name, sum(bytes/1024)/1024 FreeSpace  from dba_free_space
+   group by tablespace_name) fs,
+   (select tablespace_name, sum(maxbytes/1024)/1024 maxbytes from dba_data_files
+   group by tablespace_name) tb
+where 
+   df.tablespace_name = fs.tablespace_name 
+   and
+   df.tablespace_name = tb.tablespace_name order by "Max extend MB" asc; 
 
 ttitle center 'Temp Tablespace Usage' skip 2
 select a.tablespace_name,
@@ -164,22 +195,88 @@ AND con.name = 'consistent gets'
 AND phy.name = 'physical reads';
 
 ttitle center 'Lock' skip 2
-COLUMN username FORMAT A15
-COLUMN machine FORMAT A25
-COLUMN logon_time FORMAT A20
-SELECT LPAD(' ', (level-1)*2, ' ') || NVL(s.username, '(oracle)') AS username,
-s.osuser,
-s.sid,
-s.serial#,
-s.lockwait,
-s.status,
-s.module,
-s.machine,
-s.program,
-TO_CHAR(s.logon_Time,'DD-MON-YYYY HH24:MI:SS') AS logon_time
-FROM v$session s
-CONNECT BY PRIOR s.sid = s.blocking_session
-START WITH s.blocking_session IS NULL;
+select round(s.last_call_et / 60, 0) minutos,
+       s.status,
+       s.logon_time,
+       'kill -9 ' || p.spid as OSPID,
+       s.inst_id,
+       'alter system kill session ''' || s.sid || ',' || s.serial# || ',' || '@' || s."INST_ID" ||  ''' immediate;' SID_SERIAL#,
+       s.blocking_instance || ' - ' || s.blocking_session BLOQ,
+       s.program,
+       s.machine,
+       s.osuser,
+       s.username,
+       s.event,
+       s.prev_sql_id,
+       s.sql_id,
+       a.sql_fulltext,
+       a.sql_text
+  from gv$session s
+  join gv$sqlarea a
+    on s.inst_id = a.inst_id
+   and s.sql_id = a.sql_id
+  join gv$process p
+    on s.inst_id = p.inst_id
+   and s.paddr = p.addr
+ where s.osuser <> 'oracle'
+   and s.status = 'ACTIVE'
+   and s.osuser <> 'wabp'
+ order by s.last_call_et desc;
+
+ttitle center 'BLOQUEIO DE SESSOES' skip 2
+select  'ALTER SYSTEM KILL SESSION '||chr(39)||session_id||','||SERIAL#||',@'||c.inst_id||';' "sql pronto",
+substr(object_name,1,20) "Object",
+  substr(os_user_name,1,10) "Terminal",
+  substr(oracle_username,1,10) "Locker",
+  nvl(lockwait,'active') "Wait",
+  decode(locked_mode,
+    2, 'row share',
+    3, 'row exclusive',
+    4, 'share',
+    5, 'share row exclusive',
+    6, 'exclusive',  'unknown') "Lockmode",
+  OBJECT_TYPE "Type",
+   d.seconds_in_wait/60 "Minutos",
+blocking_Session
+FROM
+  SYS.GV_$LOCKED_OBJECT A,
+  SYS.ALL_OBJECTS B,
+  SYS.GV_$SESSION C,
+  sys.GV_$SESSION_WAIT D
+WHERE
+  A.OBJECT_ID = B.OBJECT_ID AND
+  C.SID = A.SESSION_ID  and 
+  C.SID = D.SID
+  and blocking_session is not null 
+ORDER BY 1 ASC, 5 Desc;
+
+
+ttitle center 'BLOQUEIO DE SESSOES COM MAIS DE 30 MINUTOS' skip 2
+select  'ALTER SYSTEM KILL SESSION '||chr(39)||session_id||','||SERIAL#||',@'||c.inst_id||';' "sql pronto",
+substr(object_name,1,20) "Object",
+  substr(os_user_name,1,10) "Terminal",
+  substr(oracle_username,1,10) "Locker",
+  nvl(lockwait,'active') "Wait",
+  decode(locked_mode,
+    2, 'row share',
+    3, 'row exclusive',
+    4, 'share',
+    5, 'share row exclusive',
+    6, 'exclusive',  'unknown') "Lockmode",
+  OBJECT_TYPE "Type",
+   d.seconds_in_wait/60 "Minutos",
+blocking_Session
+FROM
+  SYS.GV_$LOCKED_OBJECT A,
+  SYS.ALL_OBJECTS B,
+  SYS.GV_$SESSION C,
+  sys.GV_$SESSION_WAIT D
+WHERE
+  A.OBJECT_ID = B.OBJECT_ID AND
+  C.SID = A.SESSION_ID  and 
+  C.SID = D.SID
+  and d.seconds_in_wait/60 > 30 -- lock  mais de 30 minutos
+ORDER BY 1 ASC, 5 Desc;
 
 ttitle center 'PGA Hit Cache' skip 2
 SELECT
