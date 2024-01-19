@@ -1,5 +1,5 @@
 -- Performance Check
--- Autor Matheus Francisco Moreira Valentim dos Santos
+-- Autor Matheus Francisco Moreira dos Santos
 
 -- spoolling 
 spo PerformanceCheck.txt 
