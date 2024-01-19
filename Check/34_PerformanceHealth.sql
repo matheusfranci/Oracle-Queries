@@ -2,70 +2,43 @@
 -- Autor Matheus Francisco Moreira dos Santos
 
 -- spoolling 
-spo PerformanceCheck.txt 
+spo PerformanceCheck.html
 
 -- parametros sqlplus
 SET SERVEROUTPUT ON
-SET PAGESIZE 1000
-SET LINESIZE 1000
-SET lines 200
+SET PAGESIZE 9999
+SET LINESIZE 9999
 SET FEEDBACK OFF
 set heading on
 set termout on
 set sqlblanklines on
+set markup html on spool on entmap off
 ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.';
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Hardware                                           |
- prompt +----------------------------------------------------+
+
+ttitle center 'Hardware' skip 2
 select STAT_NAME,to_char(VALUE) as VALUE ,COMMENTS from v$osstat where stat_name IN ('NUM_CPUS','NUM_CPU_CORES','NUM_CPU_SOCKETS')
 union
 select STAT_NAME,VALUE/1024/1024/1024 || ' GB' ,COMMENTS from v$osstat where stat_name IN ('PHYSICAL_MEMORY_BYTES');
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Optimizer Index Cost ADJ                           |
- prompt +----------------------------------------------------+
+
+ttitle center 'Optimizer Index Cost ADJ' skip 2
 show parameter optimizer_index_cost_adj
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Optimizer Index Caching                            |
- prompt +----------------------------------------------------+
+ttitle center 'Optimizer Index Caching ' skip 2
 show parameter optimizer_index_caching
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | ArchiveLogMode                                     |
- prompt +----------------------------------------------------+
---verificar o archivemodelog
+ttitle center 'ArchiveLogMode' skip 2
 select log_mode from v$database;
 prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Uptime                                             |
- prompt +----------------------------------------------------+
+ttitle center 'Uptime' skip 2
 select 'Hostname : ' || host_name ,'Instance Name : ' || instance_name ,'Started At : ' || to_char(startup_time,'DD-MON-YYYY HH24:MI:SS') stime ,'Uptime : ' || floor(sysdate - startup_time) || ' days(s) ' || trunc( 24*((sysdate-startup_time) - trunc(sysdate-startup_time))) || ' hour(s) ' || mod(trunc(1440*((sysdate-startup_time) - trunc(sysdate-startup_time))), 60) ||' minute(s) ' || mod(trunc(86400*((sysdate-startup_time) - trunc(sysdate-startup_time))), 60) ||' seconds' uptime from sys.v_$instance;
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Database Size                                      |
- prompt +----------------------------------------------------+
+ttitle center 'Database Size' skip 2
 select sum(bytes) /1073741824  TAMANHO_GB from dba_segments;
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Tablespace Usage                                   |
- prompt +----------------------------------------------------+
-set lines 2000
-set pages 2000
+ttitle center 'Tablespace Usage' skip 2
 SELECT  a.tablespace_name,
     ROUND (((c.BYTES - NVL (b.BYTES, 0)) / c.BYTES) * 100,2) percentage_used,
     c.BYTES / 1024 / 1024 space_allocated,
@@ -87,12 +60,8 @@ SELECT  a.tablespace_name,
   WHERE b.tablespace_name(+) = a.tablespace_name
     AND c.tablespace_name(+) = a.tablespace_name
 ORDER BY tablespace_name;
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Temp Usage                                         |
- prompt +----------------------------------------------------+
+ttitle center 'Temp Tablespace Usage' skip 2
 select a.tablespace_name,
 to_char(nvl(a.used,0) / 1024 / 1024, 'FM999,990.00') MB_USED,
 to_char(a.total / 1024 / 1024, 'FM999,990.00') MB_TOTAL,
@@ -107,21 +76,14 @@ from dba_temp_files
 where tablespace_name = dba_tablespaces.tablespace_name) TOTAL
 from dba_tablespaces
 where contents = 'TEMPORARY') a;
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Undo usage                                         |
- prompt +----------------------------------------------------+
+
+ttitle center 'Undo usage' skip 2
 select tablespace_name tablespace, status, sum(bytes)/1024/1024 sum_in_mb, count(*) counts
 from dba_undo_extents
 group by tablespace_name, status order by 1,2;
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Sessions Running 5 minutes                         |
- prompt +----------------------------------------------------+
+ttitle center 'Sessions Running 5 minutes ' skip 2
 SELECT sid,serial#,inst_id,process,osuser,schemaname,machine,status,program,sql_id,sql_exec_start,
 to_char(logon_time,'dd-mm-yy hh:mi:ss AM')"Logon Time",
 ROUND((SYSDATE-LOGON_TIME)*(24*60),1) as LOGGED_ON_MIN,
@@ -132,12 +94,8 @@ AND USERNAME IS NOT NULL
 AND TYPE = 'USER'
 and ROUND(LAST_CALL_ET/60,1) > 5 -- more than 5 minutes
 ORDER BY LAST_CALL_ET DESC ;
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Redo Switch                                        |
- prompt +----------------------------------------------------+
+ttitle center 'Redo Switch' skip 2
 COLUMN day FORMAT A12
 COLUMN "00" FORMAT 999
 COLUMN "01" FORMAT 999
@@ -192,12 +150,8 @@ FROM v$log_history
 WHERE first_time >= SYSDATE - INTERVAL '10' DAY
 GROUP BY TO_CHAR(first_time, 'YYYY-MM-DD')
 ORDER BY day DESC;
-prompt
 
-prompt
-prompt +----------------------------------------------------+
-prompt | Buffer Cache                                       |
-prompt +----------------------------------------------------+
+ttitle center 'Buffer Cache' skip 2
 SELECT ROUND((1-(phy.value / (cur.value + con.value)))*100,2) "Cache Hit Ratio"
 FROM v$sysstat cur,
 v$sysstat con,
@@ -205,14 +159,8 @@ v$sysstat phy
 WHERE cur.name = 'db block gets'
 AND con.name = 'consistent gets'
 AND phy.name = 'physical reads';
-prompt
 
-prompt
-prompt +----------------------------------------------------+
-prompt | Lock                                               |
-prompt +----------------------------------------------------+
-SET LINESIZE 500
-SET PAGESIZE 1000
+ttitle center 'Lock' skip 2
 COLUMN username FORMAT A15
 COLUMN machine FORMAT A25
 COLUMN logon_time FORMAT A20
@@ -229,33 +177,21 @@ TO_CHAR(s.logon_Time,'DD-MON-YYYY HH24:MI:SS') AS logon_time
 FROM v$session s
 CONNECT BY PRIOR s.sid = s.blocking_session
 START WITH s.blocking_session IS NULL;
-prompt
 
-prompt
-prompt +----------------------------------------------------+
-prompt | PGA Hit Cache                                      |
-prompt +----------------------------------------------------+
+ttitle center 'PGA Hit Cache' skip 2
 SELECT
 ROUND(pga_target_for_estimate /(1024*1024))pga_target_for_estimate ,
 estd_pga_cache_hit_percentage ,
 estd_overalloc_count 
 FROM
 v$pga_target_advice;
-prompt
 
-prompt
-prompt +----------------------------------------------------+
-prompt | Hit Ratio                                          |
-prompt +----------------------------------------------------+
+ttitle center 'Hit Ratio' skip 2
 select to_char(round(value,4),'999.99') ||'%' "PGA Hit Ratio"
 from sys.v_$pgastat
 where name = 'cache hit percentage';
-prompt
 
-prompt
-prompt +----------------------------------------------------+
-prompt | Wait sessions                                     |
-prompt +----------------------------------------------------+
+ttitle center 'Wait sessions' skip 2
 select
    WAIT_CLASS,
    TOTAL_WAITS,
@@ -278,12 +214,8 @@ from
 where
    WAIT_CLASS != 'Idle')
 order by 5 desc;
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | CPU USED BY SESSION                                |
- prompt +----------------------------------------------------+
+ttitle center 'CPU USED BY SESSION' skip 2
  COLUMN value FORMAT 99999999999 HEADING "VALUE"
  SELECT n.username, s.sid, s.value/100 cpu_usage_seconds  FROM v$sesstat s,v$statname t, v$session n
  WHERE s.statistic# = t.statistic# and ROWNUM <= 10
@@ -291,11 +223,8 @@ prompt
  AND t.name='CPU used by this session'
  and n.status='ACTIVE'
  ORDER BY s.value desc;
- prompt
  
- 
- SET LINESIZE 1000
- SET PAGESIZE 1000
+ttitle center 'Validating the Database and Wait Time ratio' skip 2
  COLUMN metric_name       FORMAT a40              HEADING 'METRIC_NAME'
  COLUMN metric_unit       FORMAT a30           HEADING 'METRIC_UNIT'
  COLUMN inst_id           FORMAT 99               HEADING 'inst_id'          JUSTIFY right
@@ -303,10 +232,6 @@ prompt
  COLUMN VALUE             FORMAT 999999999.99               HEADING 'VALUE'        JUSTIFY right
  COLUMN BEGIN_TIME        FORMAT 9999999          HEADING 'begin_time'         JUSTIFY right
  COLUMN end_time          FORMAT a20              HEADING 'end_time' TRUNC
- prompt
- prompt +----------------------------------------------------+
- prompt | Validating the Database and Wait Time ratio        |
- prompt +----------------------------------------------------+
  select  METRIC_NAME,metric_unit,INST_ID,INTSIZE_CSEC,
         VALUE,begin_time ,end_time
  from    GV$SYSMETRIC
@@ -315,12 +240,8 @@ prompt
                         AND
         (INTSIZE_CSEC ,inst_id ) in
         (select max(INTSIZE_CSEC),inst_id  from GV$SYSMETRIC group by inst_id )   order by 3 ;
-prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | Waits                                              |
- prompt +----------------------------------------------------+
+ttitle center 'Waits' skip 2
 SET LINESIZE 145
  SET PAGESIZE 9999
  COLUMN wait_class        FORMAT a20              HEADING 'WAIT_CLASS'
@@ -329,12 +250,8 @@ SET LINESIZE 145
  COLUMN end_time          FORMAT 9999999          HEADING 'END_TIME'             JUSTIFY left
  COLUMN dbtime_in_wait    FORMAT 9999.99          HEADING 'DBTIME_IN_WAIT'     JUSTIFY right
  COLUMN time_waited       FORMAT 9999999.99          HEADING 'TIME_WAITED'        JUSTIFY right
- prompt
 
- prompt
- prompt +----------------------------------------------------+
- prompt | The waits are from which wait classes              |
- prompt +----------------------------------------------------+
+ttitle center 'The waits are from which wait classes  ' skip 2
  select b.wait_class ,a.inst_id ,a.begin_time ,
  a.end_time , a.dbtime_in_wait , a.time_waited from GV$WAITCLASSMETRIC a , gV$SYSTEM_WAIT_CLASS b where
  a.wait_class_id = b.wait_class_id
