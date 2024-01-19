@@ -1,9 +1,6 @@
 -- Performance Check
 -- Autor Matheus Francisco Moreira dos Santos
 
--- spoolling 
-spo PerformanceCheck.html
-
 -- parametros sqlplus
 SET SERVEROUTPUT ON
 SET PAGESIZE 9999
@@ -13,8 +10,15 @@ set heading on
 set termout on
 set sqlblanklines on
 set markup html on spool on entmap off
+SET ECHO OFF
 ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.';
+spo PerformanceCheck.html
 
+ttitle center 'SGA' skip 2
+show parameter sga
+
+ttitle center 'PGA' skip 2
+show parameter pga
 
 ttitle center 'Hardware' skip 2
 select STAT_NAME,to_char(VALUE) as VALUE ,COMMENTS from v$osstat where stat_name IN ('NUM_CPUS','NUM_CPU_CORES','NUM_CPU_SOCKETS')
@@ -30,7 +34,6 @@ show parameter optimizer_index_caching
 
 ttitle center 'ArchiveLogMode' skip 2
 select log_mode from v$database;
-prompt
 
 ttitle center 'Uptime' skip 2
 select 'Hostname : ' || host_name ,'Instance Name : ' || instance_name ,'Started At : ' || to_char(startup_time,'DD-MON-YYYY HH24:MI:SS') stime ,'Uptime : ' || floor(sysdate - startup_time) || ' days(s) ' || trunc( 24*((sysdate-startup_time) - trunc(sysdate-startup_time))) || ' hour(s) ' || mod(trunc(1440*((sysdate-startup_time) - trunc(sysdate-startup_time))), 60) ||' minute(s) ' || mod(trunc(86400*((sysdate-startup_time) - trunc(sysdate-startup_time))), 60) ||' seconds' uptime from sys.v_$instance;
