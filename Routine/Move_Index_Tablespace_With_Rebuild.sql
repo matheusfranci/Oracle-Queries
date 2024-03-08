@@ -22,3 +22,21 @@ ALTER SESSION SET CURRENT_SCHEMA=PROTHEUS;
 -- Exemplo de comando para movimentação
 			-- Nome do índice						-- Tablespace de destino
 ALTER INDEX CD_CRITICA_INDEX2_IX REBUILD TABLESPACE PROTHEUS_INDEX ONLINE;
+
+-- Identificando Indexes
+SELECT
+segment_name,
+segment_type,
+tablespace_name
+FROM dba_segments 
+WHERE owner IN ('SECOPS', 'DEVOPS')
+AND SEGMENT_TYPE='INDEX';
+
+-- Criando tablespace
+CREATE TABLESPACE SECOPS_INDEX_TBS DATAFILE SIZE 1G AUTOEXTEND ON NEXT 1G;
+
+-- Gerando script
+select 'ALTER INDEX ' || OWNER || '.'|| index_name ||' rebuild tablespace DEVOPS_INDEX_TBS online;' 
+from dba_indexes 
+where owner='DEVOPS'
+AND TABLESPACE_NAME = 'DEVOPS_DATA_TBS';
