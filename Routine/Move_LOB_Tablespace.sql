@@ -24,3 +24,13 @@ AND l.SEGMENT_NAME IN
 (SELECT segment_name FROM dba_segments WHERE segment_type = 'LOBSEGMENT' AND OWNER IN ('DEVOPS','SECOPS') AND tablespace_name IN ('SECOPS_TBS', 'DEVOPS_DATA_TBS'))
 AND l.owner IN ('SECOPS', 'DEVOPS')
 ORDER BY t.owner, t.table_name;
+
+-- Verificando
+SELECT
+segment_name,
+segment_type,
+tablespace_name
+FROM dba_segments 
+WHERE owner IN ('SECOPS', 'DEVOPS')
+AND SEGMENT_TYPE='LOBSEGMENT';
+AND tablespace_name NOT IN ('DEVSECOPS_LOB_TBS')
