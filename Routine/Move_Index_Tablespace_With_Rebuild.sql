@@ -36,7 +36,22 @@ AND SEGMENT_TYPE='INDEX';
 CREATE TABLESPACE SECOPS_INDEX_TBS DATAFILE SIZE 1G AUTOEXTEND ON NEXT 1G;
 
 -- Gerando script
+spool index_move_prod.sql
 select 'ALTER INDEX ' || OWNER || '.'|| index_name ||' rebuild tablespace DEVOPS_INDEX_TBS online;' 
 from dba_indexes 
 where owner='DEVOPS'
 AND TABLESPACE_NAME = 'DEVOPS_DATA_TBS';
+spool off
+
+-- Chamando para execução
+@table_move_prod.sql
+
+-- verificando
+SELECT
+segment_name,
+segment_type,
+tablespace_name
+FROM dba_segments 
+WHERE owner IN ('DEVOPS')
+AND SEGMENT_TYPE='INDEX'
+AND tablespace_name = 'DEVOPS_DATA_TBS';
