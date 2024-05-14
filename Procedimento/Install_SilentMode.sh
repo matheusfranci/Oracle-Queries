@@ -125,3 +125,39 @@ chmod u+x /home/oracle/scripts/*.sh
     oracle.install.db.OSRACDBA_GROUP=dba                                       \
     SECURITY_UPDATES_VIA_MYORACLESUPPORT=false                                 \
     DECLINE_SECURITY_UPDATES=true
+
+Execute como root
+/u01/app/oraInventory/orainstRoot.sh
+/u01/app/oracle/product/19.0.0/dbhome_1/root.sh
+
+Inicie o listener
+lsnrctl start
+
+Criação do banco de dados
+dbca -silent -createDatabase                                                   \
+     -templateName General_Purpose.dbc                                         \
+     -gdbname ${ORACLE_SID} -sid  ${ORACLE_SID} -responseFile NO_VALUE         \
+     -characterSet AL32UTF8                                                    \
+     -sysPassword SysPassword1                                                 \
+     -systemPassword SysPassword1                                              \
+     -createAsContainerDatabase true                                           \
+     -numberOfPDBs 1                                                           \
+     -pdbName ${PDB_NAME}                                                      \
+     -pdbAdminPassword PdbPassword1                                            \
+     -databaseType MULTIPURPOSE                                                \
+     -memoryMgmtType auto_sga                                                  \
+     -totalMemory 2000                                                         \
+     -storageType FS                                                           \
+     -datafileDestination "${DATA_DIR}"                                        \
+     -redoLogFileSize 50                                                       \
+     -emConfiguration NONE                                                     \
+     -ignorePreReqs
+
+echo "devops:/u01/app/oracle/product/19.0.0/dbhome_1:Y" >> /etc/oratab
+
+Habilitando o omf e configurando o pdb para iniciar junto com a instancia
+sqlplus / as sysdba <<EOF
+alter system set db_create_file_dest='${DATA_DIR}';
+alter pluggable database ${PDB_NAME} save state;
+exit;
+EOF
