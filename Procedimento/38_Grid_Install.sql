@@ -66,6 +66,7 @@ chmod -R 775 /u01/
 -- Usuário oracle
 # vi /home/oracle/.bash_profile
 # Oracle Settings
+echo "
 export TMP=/tmp
 export TMPDIR=$TMP
 export ORACLE_BASE=/u01/app/oracle
@@ -77,7 +78,7 @@ export ORACLE_TERM=xterm
 export BASE_PATH=/usr/sbin:$PATH
 export PATH=$ORACLE_HOME/bin:$BASE_PATH:$PATH
 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib
-export CLASSPATH=$ORACLE_HOME/JRE:$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
+export CLASSPATH=$ORACLE_HOME/JRE:$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib" >> /home/oracle/.bash_profile
 
 -- Usuário GRID
 vi /home/grid/.bash_profile
