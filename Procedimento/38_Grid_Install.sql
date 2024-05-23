@@ -50,6 +50,9 @@ groupadd -g 54329 asmadmin
 useradd -m -u 54341 -g oinstall -G dba,asmadmin,asmdba,asmoper -d /home/grid -s /bin/bash grid
 usermod -G asmdba,asmoper,asmadmin oracle
 
+-- No usuário oracle
+usermod -G oinstall,dba,oper,backupdba,dgdba,kmdba,asmdba,racdba oracle
+
 -- Alteração das senhas dos usuários oracle e grid
 # passwd oracle
 # passwd grid
