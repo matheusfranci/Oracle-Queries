@@ -47,7 +47,7 @@ groupadd -g 54328 asmoper
 groupadd -g 54329 asmadmin
 
 -- Adição dos usuários
-useradd -m -u 54341 -g oinstall -G dba,asmadmin,asmdba,asmoper -d /home/grid -s /bin/bash grid
+useradd -m -u 54341 -g oinstall -G dba,asmadmin,asmdba,asmoper,racdba -d /home/grid -s /bin/bash grid
 usermod -G asmdba,asmoper,asmadmin oracle
 
 -- No usuário oracle
