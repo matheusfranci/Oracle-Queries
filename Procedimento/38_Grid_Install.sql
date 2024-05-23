@@ -82,12 +82,13 @@ export CLASSPATH=$ORACLE_HOME/JRE:$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib" >> 
 
 -- Usuário GRID
 vi /home/grid/.bash_profile
+echo "
 export ORACLE_SID=+ASM
 export GRID_HOME=/u01/app/19.0.0/grid
 export ORACLE_HOME=$GRID_HOME
 export PATH=$ORACLE_HOME/bin:$BASE_PATH:$PATH
 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib
-export CLASSPATH=$ORACLE_HOME/JRE:$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
+export CLASSPATH=$ORACLE_HOME/JRE:$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib" >> /home/grid/.bash_profile
 
 -- Listando os discos anexados a vm no oracle virtual box
 fdisk -l
