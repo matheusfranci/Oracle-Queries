@@ -48,10 +48,20 @@ groupadd -g 54329 asmadmin
 
 -- Adição dos usuários
 useradd -m -u 54341 -g oinstall -G dba,asmadmin,asmdba,asmoper,racdba -d /home/grid -s /bin/bash grid
-usermod -G asmdba,asmoper,asmadmin oracle
 
 -- No usuário oracle
 usermod -G oinstall,dba,oper,backupdba,dgdba,kmdba,asmdba,racdba oracle
+
+-- Editar limites para o usuário grid:
+# vi /etc/security/limits.conf
+
+-- Apagar as regras existentes para o usuário grid e adicionar:
+grid soft nofile 1024
+grid hard nofile 65536
+grid soft nproc 2047
+grid hard nproc 16384
+grid soft stack 10240
+grid hard stack 32768
 
 -- Alteração das senhas dos usuários oracle e grid
 # passwd oracle
@@ -61,9 +71,9 @@ usermod -G oinstall,dba,oper,backupdba,dgdba,kmdba,asmdba,racdba oracle
 mkdir -p /u01/app/19.0.0/grid
 mkdir -p /u01/app/grid
 mkdir -p /u01/app/oracle/product/19.0.0/db_1
-chown -R grid:oinstall /u01/app
-chown oracle:oinstall -R /u01/app/oracle
-chmod -R 775 /u01/
+# chown grid:oinstall -R /u01/app
+# chown oracle:oinstall -R /u01/app/oracle
+# chmod -R 775 /u01/
 
 -- Configuração dos bash profiles
 -- Usuário oracle
@@ -210,3 +220,17 @@ CREATE DISKGROUP FRA EXTERNAL REDUNDANCY disk '/dev/oracleasm/disks/ASM7' NAME F
 
 -- Adicionando mais 1 no FRA
 ALTER DISKGROUP FRA ADD DISK '//dev/oracleasm/disks/ASM7' NAME FRA_0002;
+
+-- Em caso de falha pelos erros abaixo, favor executar o procedimento:
+/*
+PRCR-1079 : Failed to start resource ora.orcl.db
+CRS-5017: The resource action "ora.orcl.db start" encountered the following error: 
+ORA-12547: TNS:lost contact
+. For details refer to "(:CLSN00107:)" in "/u01/app/grid/diag/crs/dbserver-01/crs/trace/ohasd_oraagent_grid.trc".
+
+CRS-2674: Start of 'ora.orcl.db' on 'dbserver-01' failed
+ORA-12547: TNS:lost contact
+*/
+cd /u01/app/19.0.0/grid/bin
+chmod 6751 oracle
+relink all
