@@ -33,6 +33,10 @@ ALTER DISKGROUP SAUDEP_DATA1 ADD DISK
 'ORCL:SAUDEP_DATA1_D13' NAME SAUDEP_DATA1_D13,
 'ORCL:SAUDEP_DATA1_D14' NAME SAUDEP_DATA1_D14 REBALANCE Power 4;
 
+-- Validando o rebalance:
+select OPERATION,STATE,POWER,ACTUAL,SOFAR,
+EST_WORK,EST_RATE,EST_MINUTES from v$asm_operation ;
+
 -- SCP dentro do asm
 -- Precisa ser feito dentro do usuário GRID
 ASMCMD> cp /u01/app/oracle/rm/datapump/EXPDP_RM.dmp +DATA/dump/EXPDP_RM.dmp
