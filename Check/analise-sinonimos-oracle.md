@@ -1,4 +1,3 @@
-```markdown
 ## Explicação das Queries SQL de Sinônimos
 
 Este documento detalha duas queries SQL utilizadas para verificar e analisar sinônimos no banco de dados Oracle.
@@ -59,4 +58,4 @@ A query retorna o nome do sinônimo, o owner do sinônimo, o owner da tabela bas
 **Uso:**
 
 Estas queries são úteis para verificar a existência e a configuração de sinônimos, que são importantes para simplificar o acesso a objetos de banco de dados e para abstrair a localização desses objetos.
-```
+
