@@ -57,6 +57,6 @@ Esta query verifica se os usuários `User_01` e `User_02` possuem as roles `Role
 
 **Resultado Esperado:**
 
-A query retorna informações sobre as roles `R_SASMOVWEB_ADM` e `R_SASMOVWEB_SEL` concedidas aos usuários especificados. Isso inclui o usuário, a role concedida, se a opção de administrador está habilitada e se a role é padrão.
+A query retorna informações sobre as roles `Role_01` e `Role_02` concedidas aos usuários especificados. Isso inclui o usuário, a role concedida, se a opção de administrador está habilitada e se a role é padrão.
 
 
