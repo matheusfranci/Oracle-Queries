@@ -14,15 +14,15 @@ AND table_name IN ('tabelinha_misteriosa');
 
 **Propósito:**
 
-Esta query verifica se as roles `Role_01` e `Role_02` possuem permissões na tabela `FF4J_FEATURES`.
+Esta query verifica se as roles `Role_01` e `Role_02` possuem permissões na tabela `tabelinha_misteriosa`.
 
 **Explicação:**
 
 -   `dba_tab_privs`: Esta é uma view do dicionário de dados que contém informações sobre os privilégios concedidos em objetos de tabela.
 -   `grantee`: Coluna que especifica o usuário ou role que recebeu o privilégio.
 -   `table_name`: Coluna que especifica o nome da tabela em que o privilégio foi concedido.
--   `WHERE grantee IN ('Role_01', 'Role_02')`: Filtra os resultados para mostrar apenas os privilégios concedidos às roles `R_SASMOVWEB_ADM` e `R_SASMOVWEB_SEL`.
--   `AND table_name IN ('FF4J_FEATURES')`: Filtra os resultados para mostrar apenas os privilégios na tabela `FF4J_FEATURES`.
+-   `WHERE grantee IN ('Role_01', 'Role_02')`: Filtra os resultados para mostrar apenas os privilégios concedidos às roles `Role_01` e `Role_02`.
+-   `AND table_name IN ('tabelinha_misteriosa')`: Filtra os resultados para mostrar apenas os privilégios na tabela `tabelinha_misteriosa`.
 
 **Resultado Esperado:**
 
