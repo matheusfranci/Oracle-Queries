@@ -1,4 +1,3 @@
-```markdown
 ## Explicação das Queries SQL
 
 Este documento detalha duas queries SQL utilizadas para verificar permissões de usuários e roles no banco de dados Oracle.
@@ -58,5 +57,3 @@ Esta query verifica se os usuários `User_01` e `User_02` possuem as roles `Role
 **Resultado Esperado:**
 
 A query retorna informações sobre as roles `Role_01` e `Role_02` concedidas aos usuários especificados. Isso inclui o usuário, a role concedida, se a opção de administrador está habilitada e se a role é padrão.
-
-
