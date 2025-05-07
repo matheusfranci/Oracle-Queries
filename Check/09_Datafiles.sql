@@ -11,10 +11,8 @@ ORDER BY tablespace_name, file_name;
 
 
 -- Check data de criação do datafile
-col v$datafile.name format a16;
-col v$datafile.creation_time format a36;
-col dba_data_files.tablespace_name format a36;
-select Distinct v$datafile.name,
-v$datafile.creation_time
-from v$datafile
-order by creation_time desc;
+SELECT DISTINCT v$datafile.name,
+       v$datafile.creation_time, -- Incluindo a coluna original
+       TO_CHAR(v$datafile.creation_time, 'HH24:MI:SS') AS creation_time_hour
+FROM v$datafile
+ORDER BY v$datafile.creation_time DESC;
